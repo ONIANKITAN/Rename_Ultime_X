@@ -35,6 +35,19 @@ async def rempl(client: Client, message: Message):
 async def start(client: Client, message: Message):
     await message.reply_text("Bonjour ! Je suis votre bot. Comment puis-je vous aider aujourd'hui ...")
 
+# Filtre pour les commandes
+@app.on_message(filters.command(['activer', 'desactiver']))
+async def handle_thumbnail_command(client: Client, message: Message):
+    global change_thumbnail
+
+    if message.command[0] == 'active':
+        change_thumbnail = True
+        await message.reply_text('La fonctionnalité de modification de la vignette a été activée.')
+    elif message.command[0] == 'desactive':
+        change_thumbnail = False
+        await message.reply_text('La fonctionnalité de modification de la vignette a été désactivée.')
+
+
 @app.on_message(filters.document)
 async def rename_media(client: Client, message: Message):
     global thumbnail_image, text_to_replace
