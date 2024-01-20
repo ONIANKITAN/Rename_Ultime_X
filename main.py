@@ -33,7 +33,7 @@ async def rempl(client: Client, message: Message):
 # Ajoutez une commande /start
 @app.on_message(filters.command("start"))
 async def start(client: Client, message: Message):
-    await message.reply_text("Bonjour ! Je suis votre bot. Comment puis-je vous aider aujourd'hui ?")
+    await message.reply_text("Bonjour ! Je suis votre bot. Comment puis-je vous aider aujourd'hui ...")
 
 @app.on_message(filters.document or filters.video)
 async def rename_media(client: Client, message: Message):
