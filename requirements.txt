@@ -1,0 +1,5 @@
+Pyrogram
+Pillow
+schedule
+TgCrypto
+flask
