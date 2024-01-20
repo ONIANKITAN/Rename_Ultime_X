@@ -17,7 +17,6 @@ semaphore = asyncio.Semaphore(2)
 
 text_to_replace = "Shar"  # Partie du nom de fichier à remplacer (jusqu'aux 4 dernières lettres)
 
-
 # Variable pour stocker le nom de l'image de la vignette
 thumbnail_image = "img.jpg"
 
@@ -36,8 +35,8 @@ async def rempl(client: Client, message: Message):
 async def start(client: Client, message: Message):
     await message.reply_text("Bonjour ! Je suis votre bot. Comment puis-je vous aider aujourd'hui ?")
 
-@app.on_message(filters.document)
-async def rename_doc(client: Client, message: Message):
+@app.on_message(filters.document | filters.video)
+async def rename_media(client: Client, message: Message):
     global thumbnail_image, text_to_replace
 
     # Acquérir le sémaphore
@@ -88,6 +87,10 @@ async def rename_doc(client: Client, message: Message):
 
             else:
                 await message.reply_document(message.document.file_id)
+        else:
+            # Si la taille du fichier est supérieure à 2 Go, ignorer le traitement
+            await message.reply_text("Le fichier est trop volumineux et ne peut pas être traité.")
+
 
         
 # Fonction pour envoyer un message aléatoire dans le groupe
