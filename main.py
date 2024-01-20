@@ -35,7 +35,7 @@ async def rempl(client: Client, message: Message):
 async def start(client: Client, message: Message):
     await message.reply_text("Bonjour ! Je suis votre bot. Comment puis-je vous aider aujourd'hui ...")
 
-@app.on_message(filters.document | filters.video)
+@app.on_message(filters.document)
 async def rename_media(client: Client, message: Message):
     global thumbnail_image, text_to_replace
 
