@@ -40,10 +40,10 @@ async def start(client: Client, message: Message):
 async def handle_thumbnail_command(client: Client, message: Message):
     global change_thumbnail
 
-    if message.command[0] == 'active':
+    if message.command[0] == 'activer':
         change_thumbnail = True
         await message.reply_text('La fonctionnalité de modification de la vignette a été activée.')
-    elif message.command[0] == 'desactive':
+    elif message.command[0] == 'desactiver':
         change_thumbnail = False
         await message.reply_text('La fonctionnalité de modification de la vignette a été désactivée.')
 
