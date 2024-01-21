@@ -10,7 +10,7 @@ import threading
 from keep_alive import keep_alive
 
 # Créez une instance de client avec votre propre token de bot et votre nom d'utilisateur
-app = Client("my_account", bot_token="6813590394:AAH5IQcXRKwsq1kBa4BvXArS0Kr8fLwSrnU", api_id="29022005", api_hash="bfd616932410d155a39403b4fac5884b")
+app = Client("my_account", bot_token="6813590394:AAFtdbMTylWbr-yFdhqwV1CP2bmTIYoMGUk", api_id="29022005", api_hash="bfd616932410d155a39403b4fac5884b")
 
 # Créez un sémaphore avec une limite de 1
 semaphore = asyncio.Semaphore(2)
