@@ -116,6 +116,7 @@ async def rename_media(client: Client, message: Message):
                 new_file_path = os.path.join(os.path.dirname(file_path), new_file_name)
                 os.rename(file_path, new_file_path)
 
+                caption = f'"{message.document.file_name}" | @TurboSearch'
                 # change_thumbnail = True
                 if change_thumbnail:
                     # Vérifiez si le fichier de l'image de la vignette existe
@@ -128,9 +129,9 @@ async def rename_media(client: Client, message: Message):
                         img.save(new_file_path + '.thumbnail', 'JPEG')
 
                     # Envoyez le fichier renommé avec la nouvelle vignette
-                    await message.reply_document(new_file_path, thumb=os.path.join('tools', thumbnail_image))
+                    await message.reply_document(new_file_path, thumb=os.path.join('tools', thumbnail_image), caption=caption)
 
-                    img_thumb = os.path.join(new_file_path + '.thumbnail')
+                    img_thumb = os.path.join(new_file_path + '.thumbnail', caption=caption)
 
                     os.remove(img_thumb)
                 else:
