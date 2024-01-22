@@ -81,7 +81,7 @@ async def rename_media(client: Client, message: Message):
                 new_file_path = os.path.join(os.path.dirname(file_path), new_file_name)
                 os.rename(file_path, new_file_path)
 
-                change_thumbnail = True
+                # change_thumbnail = True
                 if change_thumbnail:
                     # Vérifiez si le fichier de l'image de la vignette existe
                     if not os.path.isfile(os.path.join('tools', thumbnail_image)):
