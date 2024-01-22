@@ -23,9 +23,9 @@ thumbnail_image = "img.jpg"
 # Ajoutez une commande /rempl pour changer le texte à remplacer et l'image de la vignette
 @app.on_message(filters.command("rempl"))
 async def rempl(client: Client, message: Message):
-    global text_to_replace, thumbnail_image
+    global test01, thumbnail_image
     command_args = message.text.split()
-    text_to_replace = command_args[1]
+    test01 = command_args[1]
     if len(command_args) > 2 and command_args[2].startswith('|'):
         thumbnail_image = command_args[3]
     await message.reply_text(f"Le texte à remplacer a été défini sur {text_to_replace} et l'image de la vignette a été définie sur {thumbnail_image}")
@@ -75,7 +75,10 @@ async def rename_media(client: Client, message: Message):
                 replace_part = message.document.file_name.split(text_to_replace)[1][:-4]
 
                 # Remplacez la partie à remplacer par "@TurboSearch" dans le nom du fichier
-                new_file_name = message.document.file_name.replace(text_to_replace + replace_part, "@TurboSearch")
+                test01 = text_to_replace + replace_part
+                
+                # Remplacez la partie à remplacer par "@TurboSearch" dans le nom du fichier
+                new_file_name = message.document.file_name.replace(test01, "@TurboSearch")
 
                 # Renommez le fichier
                 new_file_path = os.path.join(os.path.dirname(file_path), new_file_name)
