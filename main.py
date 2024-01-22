@@ -64,6 +64,11 @@ async def rename_media(client: Client, message: Message):
                 # Téléchargez le fichier
                 file_path = await message.download()
 
+                # Vérifiez si "@" est présent dans le nom du fichier
+                if "@" in message.document.file_name:
+                    # Si "@" est présent, retirez "@" du nom du fichier
+                    message.document.file_name = message.document.file_name.replace("@", "")
+
                 # Obtenez la partie du nom de fichier à remplacer (jusqu'aux 4 dernières lettres)
                 replace_part = message.document.file_name.split(text_to_replace)[1][:-4]
 
@@ -87,6 +92,10 @@ async def rename_media(client: Client, message: Message):
 
                     # Envoyez le fichier renommé avec la nouvelle vignette
                     await message.reply_document(new_file_path, thumb=os.path.join('tools', thumbnail_image))
+                    
+                    # Ajoutez le code pour envoyer le fichier dans le même bot
+                    with open(new_file_path, 'rb') as file:
+                        await app.send_document(chat_id=message.chat.id, document=file)
 
                     img_thumb = os.path.join(new_file_path + '.thumbnail')
 
@@ -94,6 +103,10 @@ async def rename_media(client: Client, message: Message):
                 else:
                     # Envoyez le fichier renommé sans la nouvelle vignette
                     await message.reply_document(new_file_path)
+
+                    # Ajoutez le code pour envoyer le fichier dans le même bot
+                    with open(new_file_path, 'rb') as file:
+                        await app.send_document(chat_id=message.chat.id, document=file)
 
                 os.remove(new_file_path)
 
