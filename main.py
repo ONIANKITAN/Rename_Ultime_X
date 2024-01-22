@@ -119,39 +119,6 @@ async def rename_media(client: Client, message: Message):
             await message.reply_text("Le fichier est trop volumineux et ne peut pas être traité.")
 
 
-        
-# Fonction pour envoyer un message aléatoire dans le groupe
-async def send_random_message():
-    random_messages = [
-        "Message aléatoire 1",
-        "Message aléatoire 2",
-        "Message aléatoire 3",
-        # Ajoutez autant de messages aléatoires que nécessaire
-    ]
-    
-    random_message = random.choice(random_messages)
-    # Envoie le message uniquement si le client est démarré
-    if app.is_initialized:
-        await app.send_message(-1002054489996, random_message)
-        
-async def start_tasks():
-    schedule.every(90).seconds.do(lambda: asyncio.run(send_random_message()))
-
-# Démarrer le client
-app.start()
-
-# Appeler la fonction start_tasks après le démarrage du client
-app.idle(asyncio.run(start_tasks()))
-
-
-# Fonction pour exécuter périodiquement les tâches planifiées
-def run_periodic_tasks():
-    while True:
-        schedule.run_pending()
-        time.sleep(1)  # Pause de 3 minutes
-
-# Démarrer la tâche périodique dans un thread en arrière-plan
-threading.Thread(target=run_periodic_tasks, daemon=True).start()
 
 keep_alive()
 app.run()
