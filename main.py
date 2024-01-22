@@ -7,7 +7,7 @@ import os
 import random
 import schedule
 import threading
-# from keep_alive import keep_alive
+from keep_alive import keep_alive
 
 # Créez une instance de client avec votre propre token de bot et votre nom d'utilisateur
 app = Client("my_account", bot_token="6664667613:AAHl1W-SARE1KdEUxK6XAK8Q-c3GA7FYvvc", api_id="29022005", api_hash="bfd616932410d155a39403b4fac5884b")
@@ -143,5 +143,5 @@ def run_periodic_tasks():
 # Démarrer la tâche périodique dans un thread en arrière-plan
 threading.Thread(target=run_periodic_tasks, daemon=True).start()
 
-# keep_alive()
+keep_alive()
 app.run()
