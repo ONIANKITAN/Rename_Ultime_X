@@ -81,9 +81,12 @@ async def rename_media(client: Client, message: Message):
                 # Obtenez la partie du nom de fichier à remplacer (jusqu'aux 4 dernières lettres)
                 # replace_part = message.document.file_name.split(text_to_replace)[1][:-4]
 
-                # Remplacez la partie à remplacer par "@TurboSearch" dans le nom du fichier
-                new_file_name = message.document.file_name.replace(text_to_replace, "").strip()
-                new_file_name = f"[@TurboSearch] {new_file_name}"
+                # Appliquez le remplacement pour chaque texte à remplacer dans la liste
+                for replacement_text in text_to_replace:
+                    new_file_name = new_file_name.replace(replacement_text, "")
+            
+                # Ensuite, ajoutez "@TurboSearch" dans le nom du fichier
+                new_file_name = f"[@TurboSearch] {new_file_name.strip()}"
 
                 # Renommez le fichier
                 new_file_path = os.path.join(os.path.dirname(file_path), new_file_name)
