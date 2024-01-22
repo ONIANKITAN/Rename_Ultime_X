@@ -66,7 +66,7 @@ async def rename_media(client: Client, message: Message):
             await message.reply_text("Fichier reçu, patientez un instant...")
 
             # Vérifiez si le nom du fichier contient la partie à remplacer
-            if text_to_replace in message.document.file_name:
+            if any(replacement_text in message.document.file_name for replacement_text in text_to_replace):
                 # Téléchargez le fichier
                 file_path = await message.download()
 
