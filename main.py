@@ -137,6 +137,12 @@ async def send_random_message():
 async def start_tasks():
     schedule.every(90).seconds.do(lambda: asyncio.run(send_random_message()))
 
+# Démarrer le client
+app.start()
+
+# Appeler la fonction start_tasks après le démarrage du client
+app.idle(asyncio.run(start_tasks()))
+
 
 # Fonction pour exécuter périodiquement les tâches planifiées
 def run_periodic_tasks():
