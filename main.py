@@ -7,28 +7,34 @@ import os
 import random
 import schedule
 import threading
-from keep_alive import keep_alive
+# from keep_alive import keep_alive
 
 # Créez une instance de client avec votre propre token de bot et votre nom d'utilisateur
-app = Client("my_account", bot_token="6813590394:AAFtdbMTylWbr-yFdhqwV1CP2bmTIYoMGUk", api_id="29022005", api_hash="bfd616932410d155a39403b4fac5884b")
+app = Client("my_account", bot_token="6664667613:AAHl1W-SARE1KdEUxK6XAK8Q-c3GA7FYvvc", api_id="29022005", api_hash="bfd616932410d155a39403b4fac5884b")
+
 
 # Créez un sémaphore avec une limite de 1
 semaphore = asyncio.Semaphore(2)
 
-text_to_replace = "Shar"  # Partie du nom de fichier à remplacer (jusqu'aux 4 dernières lettres)
+# Liste de textes à remplacer
+text_to_replace = ["Shar.Club", "SharClub"]
 
 # Variable pour stocker le nom de l'image de la vignette
 thumbnail_image = "img.jpg"
 
-# Ajoutez une commande /rempl pour changer le texte à remplacer et l'image de la vignette
-@app.on_message(filters.command("rempl"))
-async def rempl(client: Client, message: Message):
-    global test01, thumbnail_image
-    command_args = message.text.split()
-    test01 = command_args[1]
-    if len(command_args) > 2 and command_args[2].startswith('|'):
-        thumbnail_image = command_args[3]
-    await message.reply_text(f"Le texte à remplacer a été défini sur {test01} et l'image de la vignette a été définie sur {thumbnail_image}")
+
+# Commande /add pour ajouter des textes à remplacer
+@app.on_message(filters.command("add"))
+async def add_text_to_replace(client: Client, message: Message):
+    global text_to_replace
+
+    if len(message.command) > 1:
+        new_text = message.command[1]
+        text_to_replace.append(new_text)
+        await message.reply_text(f'Texte "{new_text}" ajouté à la liste.')
+    else:
+        await message.reply_text('Veuillez spécifier un texte à ajouter à la liste.')
+
 
 # Ajoutez une commande /start
 @app.on_message(filters.command("start"))
@@ -60,7 +66,7 @@ async def rename_media(client: Client, message: Message):
             temp_message = await message.reply_text("Fichier reçu, patientez un instant...")
 
             # Vérifiez si le nom du fichier contient la partie à remplacer
-            if test01 in message.document.file_name:
+            if text_to_replace in message.document.file_name:
                 # Téléchargez le fichier
                 file_path = await message.download()
 
@@ -68,23 +74,22 @@ async def rename_media(client: Client, message: Message):
                 if "@" in message.document.file_name:
                     # Si "@" est présent, retirez "@" du nom du fichier
                     message.document.file_name = message.document.file_name.replace("@", "")
+
                 else:
                     message.document.file_name = message.document.file_name
-
+                    
                 # Obtenez la partie du nom de fichier à remplacer (jusqu'aux 4 dernières lettres)
-                replace_part = message.document.file_name.split(text_to_replace)[1][:-4]
+                # replace_part = message.document.file_name.split(text_to_replace)[1][:-4]
 
                 # Remplacez la partie à remplacer par "@TurboSearch" dans le nom du fichier
-                test01 = text_to_replace + replace_part
-                
-                # Remplacez la partie à remplacer par "@TurboSearch" dans le nom du fichier
-                new_file_name = message.document.file_name.replace(test01, "@TurboSearch")
+                new_file_name = message.document.file_name.replace(text_to_replace, "").strip()
+                new_file_name = f"[@TurboSearch] {new_file_name}"
 
                 # Renommez le fichier
                 new_file_path = os.path.join(os.path.dirname(file_path), new_file_name)
                 os.rename(file_path, new_file_path)
 
-                # change_thumbnail = True
+                change_thumbnail = True
                 if change_thumbnail:
                     # Vérifiez si le fichier de l'image de la vignette existe
                     if not os.path.isfile(os.path.join('tools', thumbnail_image)):
@@ -101,16 +106,9 @@ async def rename_media(client: Client, message: Message):
                     img_thumb = os.path.join(new_file_path + '.thumbnail')
 
                     os.remove(img_thumb)
-                
                 else:
-                    # Vérifiez si le fichier de l'image de la vignette existe pour le fichier original
-                    original_thumbnail = new_file_path + '.thumbnail'
-                    if os.path.isfile(original_thumbnail):
-                        # Si la vignette existe, envoyez le fichier renommé avec la vignette originale
-                        await message.reply_document(new_file_path, thumb=original_thumbnail)
-                    else:
-                        # Sinon, envoyez le fichier renommé sans vignette
-                        await message.reply_document(new_file_path)
+                    # Envoyez le fichier renommé sans la nouvelle vignette
+                    await message.reply_document(new_file_path)
 
                 os.remove(new_file_path)
 
@@ -145,5 +143,5 @@ def run_periodic_tasks():
 # Démarrer la tâche périodique dans un thread en arrière-plan
 threading.Thread(target=run_periodic_tasks, daemon=True).start()
 
-keep_alive()
+# keep_alive()
 app.run()
