@@ -1,12 +1,8 @@
 import asyncio
-import time
 from pyrogram import Client, filters
 from pyrogram.types import Message
 from PIL import Image
 import os
-import random
-import schedule
-import threading
 from keep_alive import keep_alive
 
 # Créez une instance de client avec votre propre token de bot et votre nom d'utilisateur
@@ -14,7 +10,7 @@ app = Client("my_account", bot_token="6813590394:AAFtdbMTylWbr-yFdhqwV1CP2bmTIYo
 
 
 # Créez un sémaphore avec une limite de 1
-semaphore = asyncio.Semaphore(2)
+semaphore = asyncio.Semaphore(5)
 
 # Liste de textes à remplacer
 text_to_replace = ["Shar.Club", "SharClub"]
@@ -24,6 +20,9 @@ thumbnail_image = "img.jpg"
 
 # Définition de la variable change_thumbnail
 change_thumbnail = False
+
+processing_enabled = True
+
 
 
 # Commande /add pour ajouter des textes à remplacer
@@ -37,11 +36,27 @@ async def add_text_to_replace(client: Client, message: Message):
         # Ajouter le nouveau texte uniquement s'il n'est pas déjà dans la liste
         if new_text not in text_to_replace:
             text_to_replace.append(new_text)
-            await message.reply_text(f'Texte "{new_text}" ajouté à la liste.')
+            all_texts = '\n'.join([f'- {text}' for text in text_to_replace])  # Formatage de la liste
+            await message.reply_text(f'Texte "{new_text}" ajouté à la liste.\nListe actuelle :\n{all_texts}')
         else:
             await message.reply_text(f'Texte "{new_text}" est déjà dans la liste.')
     else:
         await message.reply_text('Veuillez spécifier un texte à ajouter à la liste.')
+
+
+# Commande /start_processing pour démarrer le traitement des fichiers
+@app.on_message(filters.command("start_processing"))
+async def start_processing(client: Client, message: Message):
+    global processing_enabled
+    processing_enabled = True
+    await message.reply_text('Le traitement des fichiers a été démarré.')
+
+# Commande /stop_processing pour arrêter le traitement des fichiers
+@app.on_message(filters.command("stop_processing"))
+async def stop_processing(client: Client, message: Message):
+    global processing_enabled
+    processing_enabled = False
+    await message.reply_text('Le traitement des fichiers a été arrêté.')
 
 
 
@@ -65,8 +80,12 @@ async def handle_thumbnail_command(client: Client, message: Message):
 
 @app.on_message(filters.document)
 async def rename_media(client: Client, message: Message):
-    global thumbnail_image, text_to_replace
+    global processing_enabled, thumbnail_image, text_to_replace
 
+    if not processing_enabled:
+        await message.reply_text('Le traitement des fichiers est actuellement désactivé.')
+        return
+    
     # Acquérir le sémaphore
     async with semaphore:
         # Vérifiez si la taille du fichier est inférieure à 2 Go (2 * 1024 * 1024 * 1024 octets)
