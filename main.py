@@ -28,7 +28,7 @@ async def rempl(client: Client, message: Message):
     test01 = command_args[1]
     if len(command_args) > 2 and command_args[2].startswith('|'):
         thumbnail_image = command_args[3]
-    await message.reply_text(f"Le texte à remplacer a été défini sur {text_to_replace} et l'image de la vignette a été définie sur {thumbnail_image}")
+    await message.reply_text(f"Le texte à remplacer a été défini sur {test01} et l'image de la vignette a été définie sur {thumbnail_image}")
 
 # Ajoutez une commande /start
 @app.on_message(filters.command("start"))
@@ -60,7 +60,7 @@ async def rename_media(client: Client, message: Message):
             temp_message = await message.reply_text("Fichier reçu, patientez un instant...")
 
             # Vérifiez si le nom du fichier contient la partie à remplacer
-            if text_to_replace in message.document.file_name:
+            if test01 in message.document.file_name:
                 # Téléchargez le fichier
                 file_path = await message.download()
 
