@@ -98,13 +98,8 @@ async def rename_media(client: Client, message: Message):
                     img_thumb = os.path.join(new_file_path + '.thumbnail')
 
                     os.remove(img_thumb)
+                
                 else:
-                    # Vérifiez si le fichier de l'image de la vignette existe pour le fichier original
-                    original_thumbnail = new_file_path + '.thumbnail'
-                    if os.path.isfile(original_thumbnail):
-                        # Si la vignette existe, envoyez le fichier renommé avec la vignette originale
-                        await message.reply_document(new_file_path, thumb=original_thumbnail)
-                    else:
                         # Sinon, envoyez le fichier renommé sans vignette
                         await message.reply_document(new_file_path)
 
