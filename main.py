@@ -134,8 +134,7 @@ async def send_random_message():
     if app.is_initialized:
         await app.send_message(-1002054489996, random_message)
         
-@app.on_start()
-async def on_start():
+async def start_tasks():
     schedule.every(90).seconds.do(lambda: asyncio.run(send_random_message()))
 
 
