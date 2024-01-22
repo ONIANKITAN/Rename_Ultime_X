@@ -95,10 +95,6 @@ async def rename_media(client: Client, message: Message):
                     # Envoyez le fichier renommé avec la nouvelle vignette
                     await message.reply_document(new_file_path, thumb=os.path.join('tools', thumbnail_image))
 
-                    # Ajoutez le code pour envoyer le fichier dans le même bot
-                    with open(new_file_path, 'rb') as file:
-                        await app.send_document(chat_id=message.chat.id, document=file)
-
                     img_thumb = os.path.join(new_file_path + '.thumbnail')
 
                     os.remove(img_thumb)
