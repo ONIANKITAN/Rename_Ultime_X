@@ -14,13 +14,16 @@ app = Client("my_account", bot_token="6813590394:AAFtdbMTylWbr-yFdhqwV1CP2bmTIYo
 
 
 # Créez un sémaphore avec une limite de 1
-semaphore = asyncio.Semaphore(5)
+semaphore = asyncio.Semaphore(2)
 
 # Liste de textes à remplacer
 text_to_replace = ["Shar.Club", "SharClub"]
 
 # Variable pour stocker le nom de l'image de la vignette
 thumbnail_image = "img.jpg"
+
+# Définition de la variable change_thumbnail
+change_thumbnail = False
 
 
 # Commande /add pour ajouter des textes à remplacer
@@ -30,10 +33,16 @@ async def add_text_to_replace(client: Client, message: Message):
 
     if len(message.command) > 1:
         new_text = message.command[1]
-        text_to_replace.append(new_text)
-        await message.reply_text(f'Texte "{new_text}" ajouté à la liste.')
+
+        # Ajouter le nouveau texte uniquement s'il n'est pas déjà dans la liste
+        if new_text not in text_to_replace:
+            text_to_replace.append(new_text)
+            await message.reply_text(f'Texte "{new_text}" ajouté à la liste.')
+        else:
+            await message.reply_text(f'Texte "{new_text}" est déjà dans la liste.')
     else:
         await message.reply_text('Veuillez spécifier un texte à ajouter à la liste.')
+
 
 
 # Ajoutez une commande /start
@@ -66,7 +75,7 @@ async def rename_media(client: Client, message: Message):
             await message.reply_text("Fichier reçu, patientez un instant...")
 
             # Vérifiez si le nom du fichier contient la partie à remplacer
-            if any(replacement_text in message.document.file_name for replacement_text in text_to_replace):
+            if any(text in message.document.file_name for text in text_to_replace):
                 # Téléchargez le fichier
                 file_path = await message.download()
 
@@ -74,25 +83,21 @@ async def rename_media(client: Client, message: Message):
                 if "@" in message.document.file_name:
                     # Si "@" est présent, retirez "@" du nom du fichier
                     message.document.file_name = message.document.file_name.replace("@", "")
-
                 else:
                     message.document.file_name = message.document.file_name
-                    
-                # Obtenez la partie du nom de fichier à remplacer (jusqu'aux 4 dernières lettres)
-                # replace_part = message.document.file_name.split(text_to_replace)[1][:-4]
 
-                # Appliquez le remplacement pour chaque texte à remplacer dans la liste
-                for replacement_text in text_to_replace:
-                    new_file_name = new_file_name.replace(replacement_text, "")
-            
-                # Ensuite, ajoutez "@TurboSearch" dans le nom du fichier
-                new_file_name = f"[@TurboSearch] {new_file_name.strip()}"
+                # Remplacez chaque partie à remplacer par "@TurboSearch" dans le nom du fichier
+                for text in text_to_replace:
+                    message.document.file_name = message.document.file_name.replace(text, "")
+                
+                # Ajoutez "@TurboSearch" au début du nom du fichier
+                new_file_name = f"[@TurboSearch] {message.document.file_name.strip()}"
 
                 # Renommez le fichier
                 new_file_path = os.path.join(os.path.dirname(file_path), new_file_name)
                 os.rename(file_path, new_file_path)
 
-                change_thumbnail = True
+                # change_thumbnail = True
                 if change_thumbnail:
                     # Vérifiez si le fichier de l'image de la vignette existe
                     if not os.path.isfile(os.path.join('tools', thumbnail_image)):
@@ -120,8 +125,6 @@ async def rename_media(client: Client, message: Message):
         else:
             # Si la taille du fichier est supérieure à 2 Go, ignorer le traitement
             await message.reply_text("Le fichier est trop volumineux et ne peut pas être traité.")
-
-
 
 keep_alive()
 app.run()
