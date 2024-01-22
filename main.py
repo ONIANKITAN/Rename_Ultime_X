@@ -130,9 +130,14 @@ async def send_random_message():
     ]
     
     random_message = random.choice(random_messages)
-    await app.send_message(-1002054489996, random_message)
-# Planifie l'envoi du message aléatoire toutes les 3 minutes
-schedule.every(50).seconds.do(lambda: asyncio.run(send_random_message()))
+    # Envoie le message uniquement si le client est démarré
+    if app.is_initialized:
+        await app.send_message(-1002054489996, random_message)
+        
+@app.on_start()
+async def on_start():
+    schedule.every(90).seconds.do(lambda: asyncio.run(send_random_message()))
+
 
 # Fonction pour exécuter périodiquement les tâches planifiées
 def run_periodic_tasks():
