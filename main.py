@@ -115,8 +115,11 @@ async def rename_media(client: Client, message: Message):
                 # Renommez le fichier
                 new_file_path = os.path.join(os.path.dirname(file_path), new_file_name)
                 os.rename(file_path, new_file_path)
-
-                caption = f'"{message.document.file_name}" | @TurboSearch'
+                
+                # Retirez les 4 derniers caractères du nom du fichier
+                filename_without_last_4_chars = message.document.file_name[:-4]
+                
+                caption = f'<code>{filename_without_last_4_chars}</code> | <b>@TurboSearch</b>'
                 # change_thumbnail = True
                 if change_thumbnail:
                     # Vérifiez si le fichier de l'image de la vignette existe
@@ -127,11 +130,11 @@ async def rename_media(client: Client, message: Message):
                     with Image.open(os.path.join('tools', thumbnail_image)) as img:
                         # Enregistrez l'image en tant que vignette pour le fichier
                         img.save(new_file_path + '.thumbnail', 'JPEG')
+                    
+                    # caption = f'<code>"{message.document.file_name}"</code> | @TurboSearch'
+                    await message.reply_document(new_file_path, thumb=os.path.join('tools', thumbnail_image), caption=caption, parse_mode='HTML')
 
-                    # Envoyez le fichier renommé avec la nouvelle vignette
-                    await message.reply_document(new_file_path, thumb=os.path.join('tools', thumbnail_image), caption=caption)
-
-                    img_thumb = os.path.join(new_file_path + '.thumbnail', caption=caption)
+                    img_thumb = os.path.join(new_file_path + '.thumbnail', caption=caption, parse_mode='HTML')
 
                     os.remove(img_thumb)
                 else:
