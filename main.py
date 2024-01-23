@@ -119,7 +119,7 @@ async def rename_media(client: Client, message: Message):
                 # Retirez les 4 derniers caractères du nom du fichier
                 filename_without_last_4_chars = message.document.file_name[:-4]
                 
-                caption0 = f'<code>{filename_without_last_4_chars}</code> <b>| @TurboSearch'</b> 
+                caption0 = f'<code>{filename_without_last_4_chars}</code> <b>| @TurboSearch</b>'
                 # change_thumbnail = True
                 if change_thumbnail:
                     # Vérifiez si le fichier de l'image de la vignette existe
