@@ -37,7 +37,7 @@ async def add_text_to_replace(client: Client, message: Message):
         if new_text not in text_to_replace:
             text_to_replace.append(new_text)
             all_texts = '\n'.join([f'- {text}' for text in text_to_replace])  # Formatage de la liste
-            await message.reply_text(f'Texte "{new_text}" ajouté à la liste.\nListe actuelle :\n{all_texts}')
+            await message.reply_text(f'Texte "{new_text}" ajouté à la liste.\nListe actuelle :\n`{all_texts}`')
         else:
             await message.reply_text(f'Texte "{new_text}" est déjà dans la liste.')
     else:
@@ -119,7 +119,7 @@ async def rename_media(client: Client, message: Message):
                 # Retirez les 4 derniers caractères du nom du fichier
                 filename_without_last_4_chars = message.document.file_name[:-4]
                 
-                caption = f"_{filename_without_last_4_chars}_ **| @TurboSearch**"
+                caption = f"`{filename_without_last_4_chars}` **| @TurboSearch**"
                 # change_thumbnail = True
                 if change_thumbnail:
                     # Vérifiez si le fichier de l'image de la vignette existe
