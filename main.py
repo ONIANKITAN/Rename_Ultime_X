@@ -23,6 +23,22 @@ change_thumbnail = False
 
 processing_enabled = True
 
+# Ajoutez une commande /start
+@app.on_message(filters.command("start"))
+async def start(client: Client, message: Message):
+    commands_list = [
+        "`/start` - Affiche ce message d'accueil.",
+        "`/activer` - Active la fonctionnalité de modification de la vignette.",
+        "`/desactiver` - Désactive la fonctionnalité de modification de la vignette.",
+        "`/add <texte>` - Ajoute un texte à la liste de remplacement.",
+        "`/remove_text <texte|all>` - Retire un texte spécifique ou tous les textes de la liste de remplacement.",
+        "`/list_text` - Affiche tous les textes dans la liste de remplacement.",
+        "`/stop_processing` - Arrête le traitement des fichiers.",
+        "`/start_processing` - Démarre le traitement des fichiers."
+    ]
+
+    await message.reply_text(f"Bonjour ! Je suis votre bot. Voici la liste des commandes disponibles :\n\n" + "\n".join(commands_list))
+
 
 
 # Commande /add pour ajouter des textes à remplacer
@@ -43,6 +59,35 @@ async def add_text_to_replace(client: Client, message: Message):
     else:
         await message.reply_text('Veuillez spécifier un texte à ajouter à la liste.')
 
+# Commande /list_text pour afficher tous les éléments de la liste
+@app.on_message(filters.command("list_text"))
+async def list_text(client: Client, message: Message):
+    global text_to_replace
+
+    if text_to_replace:
+        all_texts = '\n'.join([f'- {text}' for text in text_to_replace])  # Formatage de la liste
+        await message.reply_text(f'Liste actuelle :\n{all_texts}')
+    else:
+        await message.reply_text('La liste est actuellement vide.')
+
+# Commande /remove_text pour retirer un élément spécifique ou tous les éléments de la liste
+@app.on_message(filters.command("remove_text"))
+async def remove_text(client: Client, message: Message):
+    global text_to_replace
+
+    if len(message.command) > 1:
+        text_to_remove = message.command[1]
+
+        if text_to_remove.lower() == "all":
+            text_to_replace.clear()  # Retirer tous les éléments de la liste
+            await message.reply_text('Tous les éléments ont été retirés de la liste.')
+        elif text_to_remove in text_to_replace:
+            text_to_replace.remove(text_to_remove)  # Retirer un élément spécifique
+            await message.reply_text(f'Texte "{text_to_remove}" a été retiré de la liste.')
+        else:
+            await message.reply_text(f'Texte "{text_to_remove}" n\'est pas dans la liste.')
+    else:
+        await message.reply_text('Veuillez spécifier un texte à retirer de la liste.')
 
 # Commande /start_processing pour démarrer le traitement des fichiers
 @app.on_message(filters.command("start_processing"))
@@ -57,13 +102,6 @@ async def stop_processing(client: Client, message: Message):
     global processing_enabled
     processing_enabled = False
     await message.reply_text('Le traitement des fichiers a été arrêté.')
-
-
-
-# Ajoutez une commande /start
-@app.on_message(filters.command("start"))
-async def start(client: Client, message: Message):
-    await message.reply_text("Bonjour ! Je suis votre bot. Comment puis-je vous aider aujourd'hui ...")
 
 # Filtre pour les commandes
 @app.on_message(filters.command(['activer', 'desactiver']))
