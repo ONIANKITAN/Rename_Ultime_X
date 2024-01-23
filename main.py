@@ -140,8 +140,14 @@ async def rename_media(client: Client, message: Message):
                 if "@" in message.document.file_name:
                     # Si "@" est présent, retirez "@" du nom du fichier
                     message.document.file_name = message.document.file_name.replace("@", "")
-                else:
-                    message.document.file_name = message.document.file_name
+                
+                # Retirez "[" s'il est présent dans le nom du fichier
+                if "[" in message.document.file_name:
+                    message.document.file_name = message.document.file_name.replace("[", "")
+                
+                # Retirez "]" s'il est présent dans le nom du fichier
+                if "]" in message.document.file_name:
+                    message.document.file_name = message.document.file_name.replace("]", "")
 
                 # Remplacez chaque partie à remplacer par "@TurboSearch" dans le nom du fichier
                 for text in text_to_replace:
