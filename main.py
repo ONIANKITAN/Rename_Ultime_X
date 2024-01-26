@@ -8,16 +8,6 @@ from keep_alive import keep_alive
 # Créez une instance de client avec votre propre token de bot et votre nom d'utilisateur
 app = Client("my_account", bot_token="5794110227:AAHYa4vaeUfQr7LoYKWin0_tX2Gu_sccAco", api_id="21648908", api_hash="a6f834b1a8f86046078f05bfe34c0a5f")
 
-import asyncio
-from pyrogram import Client, filters
-from pyrogram.types import Message
-from PIL import Image
-import os
-from keep_alive import keep_alive
-
-# Créez une instance de client avec votre propre token de bot et votre nom d'utilisateur
-app = Client("my_account", bot_token="5794110227:AAHYa4vaeUfQr7LoYKWin0_tX2Gu_sccAco", api_id="21648908", api_hash="a6f834b1a8f86046078f05bfe34c0a5f")
-
 
 # Créez un sémaphore avec une limite de 1
 semaphore = asyncio.Semaphore(5)
@@ -130,8 +120,16 @@ async def handle_thumbnail_command(client: Client, message: Message):
 async def rename_media(client: Client, message: Message):
     global processing_enabled, thumbnail_image, text_to_replace
 
+    # Vérifie si le traitement des fichiers est désactivé
     if not processing_enabled:
-        await message.reply_text('Le traitement des fichiers est actuellement désactivé.')
+        # Envoie un message
+        temp_message = await message.reply_text('Le traitement des fichiers est actuellement désactivé.')
+        
+        # Attend 10 secondes
+        await asyncio.sleep(5)
+        
+        # Supprime le message
+        await temp_message.delete()
         return
     
     # Acquérir le sémaphore
