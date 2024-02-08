@@ -195,7 +195,7 @@ async def rename_media(client: Client, message: Message):
                 # Retirez les 4 derniers caractères du nom du fichier
                 filename_without_last_4_chars = message.document.file_name[:-4]
 
-                text_caracter = [".", "_", "-"]:
+                text_caracter = [".", "_", "-"]
                 for text in text_caracter :
                     filename_without_last_4_chars = filename_without_last_4_chars.replace(text, " ")
                 
